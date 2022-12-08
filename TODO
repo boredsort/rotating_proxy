@@ -1,0 +1,14 @@
+# TODO
+
+ - create proxy finder to scrape proxies from various free proxy list
+    - save the proxy to json file or redis server
+    - proxy should be in a schema, with attributes such as country, region, port and protocol
+
+ - create proxy tester to identify working proxies
+    
+ - create a CLI interface to be able to use with other programs
+    - cli should have commands such as find and refresh the proxy list
+
+ 
+ - create a proxy getter from your valid proxy list
+    - should be able to find by country
