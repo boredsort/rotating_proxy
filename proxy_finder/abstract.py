@@ -1,7 +1,8 @@
 from abc import ABCMeta, abstractmethod
 from datetime import datetime
-from typing import Optional
 import json
+
+from schema import Optional
 
 from proxy_finder.result_validator import validate as _validate
 

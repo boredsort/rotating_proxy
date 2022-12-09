@@ -8,6 +8,9 @@ requests = "*"
 js2py = "*"
 schema = "*"
 fake-useragent = "*"
+cloudscraper = "*"
+bs4 = "*"
+lxml = "*"
 
 [dev-packages]
 

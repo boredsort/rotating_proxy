@@ -1,23 +1,22 @@
 from datetime import datetime
-from typing import Optional
 import json
 
-from schema import Schema
+from schema import Schema, Optional
 
 result_schema = Schema({
     "meta": {
         "source_url": str,
-        "date": datetime
+        "extraction_date": datetime
     },
     "data": {
         "ip": str,
         "port": int,
         "country": str,
         "protocol": str,
-        "region": Optional(str),
-        "city": Optional(str),
-        "anonymity": Optional(str),
-        "uptime": Optional(str)
+        Optional("region"): str,
+        Optional("city"): str,
+        Optional("anonymity"): str,
+        Optional("uptime"): str
     }
 })
 
