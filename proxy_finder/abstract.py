@@ -29,11 +29,13 @@ class ProxyData:
     anonymity: Optional(str)
     uptime: Optional(str)
 
-class ProxyInfo:
-
-    meta: MetaData
-    data: ProxyData
 
     def validate(self):
         return _validate(self)
+
+
+class ProxyInfo:
+
+    meta: MetaData
+    proxy_list: list[ProxyData]
 

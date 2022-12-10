@@ -3,7 +3,7 @@ import json
 
 from schema import Schema, Optional
 
-proxy_info_schema = Schema({
+proxy_data_schema = Schema({
     "meta": {
         "source_url": str,
         "extraction_date": datetime

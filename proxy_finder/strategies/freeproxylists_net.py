@@ -1,12 +1,13 @@
 import json
 import re
+from datetime import datetime
 
 import requests
 import cloudscraper
 from bs4 import BeautifulSoup, Tag
 from fake_useragent import UserAgent
 
-from proxy_finder.abstract import ProxyInfo
+from proxy_finder.abstract import ProxyData, ProxyInfo
 from proxy_finder.base import BaseStrategy
 from proxy_finder.utils.decorators import attribute
 from proxy_finder.utils.decoder import UtfJS
@@ -18,7 +19,7 @@ class FreeProxyListsNetStrategy(BaseStrategy):
     def __init__(self):
         self.scraper = cloudscraper.create_scraper()
 
-    def execute(self, url:str)->list:
+    def execute(self, url:str)->ProxyInfo:
         
         raw = self.download(url)
         _json = self.parse(raw)
@@ -57,19 +58,28 @@ class FreeProxyListsNetStrategy(BaseStrategy):
         row_tags = data_grid_tag.select('tr:not(.Caption)')
         if row_tags:
 
+            proxy_list = []
             for row in row_tags:
                 # filter ads
                 if not row.select_one('[src*=pagead]'):
-                    proxy_info = ProxyInfo()
-                    proxy_info.data.ip = self.get_ip_add(row)
-                    proxy_info.data.port = self.get_port_number(row)
-                    proxy_info.data.protocol = self.get_protocol(row)
-                    proxy_info.data.anonymity = self.get_anonimity(row)
-                    proxy_info.data.country = self.get_country(row)
-                    proxy_info.data.region = self.get_region(row)
-                    proxy_info.data.city = self.get_city(row)
-                    proxy_info.data.uptime = self.get_uptime(row)
+                    proxy = ProxyData()
+                    proxy.ip = self.get_ip_add(row)
+                    proxy.port = self.get_port_number(row)
+                    proxy.protocol = self.get_protocol(row)
+                    proxy.anonymity = self.get_anonimity(row)
+                    proxy.country = self.get_country(row)
+                    proxy.region = self.get_region(row)
+                    proxy.city = self.get_city(row)
+                    proxy.uptime = self.get_uptime(row)
+                    try:
+                        if proxy.validate():
+                            proxy_list.append(proxy)
+                    except:
+                        # should have a logger here
+                        continue
 
+                    
+                    
 
     @attribute
     def get_ip_add(self, row_tag:Tag)->str:

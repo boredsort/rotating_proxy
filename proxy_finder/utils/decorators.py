@@ -13,7 +13,7 @@ def attribute(func):
             if not value:
                 value = 'NOT_FOUND'
                 if 'port' in func_name:
-                    value = 0 
+                    return 0 
 
             if not isinstance(value, str):
                 value = str(value)
