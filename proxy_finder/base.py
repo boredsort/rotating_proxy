@@ -4,10 +4,11 @@ import requests
 from fake_useragent import UserAgent
 
 from proxy_finder.abstract import AbstractStrategy
+from proxy_finder.abstract import ProxyData, ProxyInfo
 
 class BaseStrategy(AbstractStrategy):
 
-    def execute(self, url:str)->list:
+    def execute(self, url:str)->ProxyInfo:
         
         raw = self.download(url)
         _json = self.parse(raw)

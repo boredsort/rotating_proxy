@@ -21,5 +21,5 @@ proxy_data_schema = Schema({
 })
 
 def validate(proxy_info_json:json)->bool:
-    return proxy_info_schema.validate(proxy_info_json)
+    return proxy_data_schema.validate(proxy_info_json)
 

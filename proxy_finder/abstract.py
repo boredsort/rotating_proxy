@@ -29,10 +29,8 @@ class ProxyData:
     anonymity: Optional(str)
     uptime: Optional(str)
 
-
     def validate(self):
         return _validate(self)
-
 
 class ProxyInfo:
 
