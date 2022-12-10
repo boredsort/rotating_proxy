@@ -10,7 +10,7 @@ from proxy_finder.result_validator import validate as _validate
 class AbstractStrategy(metaclass=ABCMeta):
 
     @abstractmethod
-    def execute(self, url:str)->'ResultData':
+    def execute(self, url:str)->'ProxyInfo':
         raise NotImplementedError
 
 class MetaData:
@@ -29,7 +29,7 @@ class ProxyData:
     anonymity: Optional(str)
     uptime: Optional(str)
 
-class ResultData:
+class ProxyInfo:
 
     meta: MetaData
     data: ProxyData

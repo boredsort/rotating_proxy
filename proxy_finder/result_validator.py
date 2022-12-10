@@ -3,7 +3,7 @@ import json
 
 from schema import Schema, Optional
 
-result_schema = Schema({
+proxy_info_schema = Schema({
     "meta": {
         "source_url": str,
         "extraction_date": datetime
@@ -20,6 +20,6 @@ result_schema = Schema({
     }
 })
 
-def validate(result_json:json)->bool:
-    return result_schema.validate(result_json)
+def validate(proxy_info_json:json)->bool:
+    return proxy_info_schema.validate(proxy_info_json)
 

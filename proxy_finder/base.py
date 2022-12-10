@@ -3,11 +3,11 @@ import json
 import requests
 from fake_useragent import UserAgent
 
-from proxy_finder.abstract import AbstractStrategy, ResultData
+from proxy_finder.abstract import AbstractStrategy
 
 class BaseStrategy(AbstractStrategy):
 
-    def execute(self, url:str)->ResultData:
+    def execute(self, url:str)->list:
         
         raw = self.download(url)
         _json = self.parse(raw)
