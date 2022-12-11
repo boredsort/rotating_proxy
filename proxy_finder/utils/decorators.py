@@ -15,6 +15,9 @@ def attribute(func):
                 if 'port' in func_name:
                     return 0 
 
+            if 'port' in func_name:
+                return int(value)
+
             if not isinstance(value, str):
                 value = str(value)
 

@@ -10,15 +10,15 @@ from proxy_finder.result_validator import validate as _validate
 class AbstractStrategy(metaclass=ABCMeta):
 
     @abstractmethod
-    def execute(self, url:str) -> 'ProxyInfo':
+    def execute(self) -> 'ProxyInfo':
         raise NotImplementedError
 
 class MetaData:
 
-    source_url:str
-    extraction_date:datetime
+    source_url: str
+    extraction_date: datetime
 
-class ProxyData:
+class ProxyData():
 
     ip: str
     port: int
@@ -30,7 +30,7 @@ class ProxyData:
     uptime: Optional(str)
 
     def validate(self):
-        return _validate(self)
+        return _validate(self.__dict__)
 
 class ProxyInfo:
 

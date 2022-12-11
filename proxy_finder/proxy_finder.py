@@ -2,15 +2,15 @@ import json
 from typing import List
 from pathlib import Path, PosixPath
 
-from abstract import ProxyInfo
-from factory import StrategyFactory
+from proxy_finder.abstract import ProxyInfo
+from proxy_finder.factory import StrategyFactory
 
 
 class ProxyFinder:
 
     def extract(self, site: str) -> ProxyInfo:
         
-        strategy = StrategyFactory().get_strategies(site)
+        strategy = StrategyFactory().get_strategy(site)()
 
         proxy_info = strategy.execute()
 
