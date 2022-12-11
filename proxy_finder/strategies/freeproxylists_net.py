@@ -15,13 +15,14 @@ from proxy_finder.utils.decoder import UtfJS
 
 class FreeProxyListsNetStrategy(BaseStrategy):
 
+    URL = 'https://www.freeproxylists.net/'
 
     def __init__(self):
         self.scraper = cloudscraper.create_scraper()
 
-    def execute(self, url:str)->ProxyInfo:
+    def execute(self)->ProxyInfo:
         
-        raw = self.download(url)
+        raw = self.download(self.URL)
         _json = self.parse(raw)
 
     def download(self, url:str)->str:
