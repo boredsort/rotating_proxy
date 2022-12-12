@@ -18,6 +18,11 @@ class MetaData:
     source_url: str
     extraction_date: datetime
 
+    def __init__(self):
+
+        self.extraction_date = datetime.now()
+
+
 class ProxyData():
 
     ip: str
@@ -35,5 +40,11 @@ class ProxyData():
 class ProxyInfo:
 
     meta: MetaData
-    proxy_list: list[ProxyData]
+    proxy_list: list[ProxyData] = []
+
+    def __init__(self):
+
+        self.meta = MetaData()
+
+
 

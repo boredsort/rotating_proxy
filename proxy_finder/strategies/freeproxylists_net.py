@@ -89,7 +89,6 @@ class FreeproxylistsNetStrategy(BaseStrategy):
 
         proxy_info = ProxyInfo()
         proxy_info.proxy_list = proxy_list
-        proxy_info.meta.extraction_date = datetime().now()
         proxy_info.meta.source_url = self.URL
         
         return proxy_list
