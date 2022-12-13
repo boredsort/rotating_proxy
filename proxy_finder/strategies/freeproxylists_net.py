@@ -23,7 +23,9 @@ class FreeproxylistsNetStrategy(BaseStrategy):
     def execute(self) -> ProxyInfo:
 
         raw = self.download(self.URL)
-        _json = self.parse(raw)
+        proxy_info = self.parse(raw)
+        
+        return proxy_info
 
 
     def download(self, url: str) -> str:
@@ -53,7 +55,7 @@ class FreeproxylistsNetStrategy(BaseStrategy):
 
         return raw
 
-    def parse(self, raw: str) -> json:
+    def parse(self, raw: str) -> ProxyInfo:
         soup = BeautifulSoup(raw, 'lxml')
 
         proxy_list = []
