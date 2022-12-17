@@ -14,6 +14,8 @@ class ProxyFinder:
 
         proxy_info = strategy.execute()
 
+        # write to a tempfile to prevent from rescraping, add force to override the current cache on the site
+
         return proxy_info
 
 
