@@ -8,10 +8,6 @@ from proxy_finder.proxy_finder import ProxyFinder
 def find_proxies(sites: str | List[str]) -> List[ProxyInfo | None]:
     """Returns a list of proxies from a site or cache"""
 
-    # check if items in site exist in cache
-        # if now then get from the website
-
-
     # try refactoring this code later to be multithreaded for faster proxy finder extraction
 
     proxies = []
