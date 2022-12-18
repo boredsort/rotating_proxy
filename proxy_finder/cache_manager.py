@@ -1,8 +1,10 @@
 import shelve
 from pathlib import Path
 from typing import List
+from datetime import date
 
 from proxy_finder.abstract import ProxyInfo
+from proxy_finder.utils.formatter import format_sitename, format_date
 
 class CacheManager:
 
@@ -13,9 +15,18 @@ class CacheManager:
 
     def write_cache(self, data: ProxyInfo) -> bool:
         """Write the cache, returns true if successful"""
+        # site = format_sitename(data.meta.source_url)
+        today = format_date(date().today())
+        file_name = format_sitename(data.meta.source_url)
+        path_to_file = Path.joinpath(self._cache_path, file_name)
+        try:
+            with shelve.open(path_to_file._str) as cache_file:
+                cache_file[today] = data
+        except:
+            # logger here
+            return False
 
-        with self._cache_path.open('w') as cache_file:
-            pass
+        return True
 
 
     def get_cache(self, key) -> ProxyInfo:
