@@ -11,6 +11,7 @@ fake-useragent = "*"
 cloudscraper = "*"
 bs4 = "*"
 lxml = "*"
+pytest = "*"
 
 [dev-packages]
 autopep8 = "*"
