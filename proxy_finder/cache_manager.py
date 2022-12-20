@@ -29,10 +29,20 @@ class CacheManager:
         return True
 
 
-    def get_cache(self, key) -> ProxyInfo:
+    def get_cache(self, cache_name, key: date|None) -> ProxyInfo:
         """Returns cache using a key"""
-        pass
+        if not key:
+            key = format_date(date.today())
 
+        file_name = cache_name
+        path_to_file = Path.joinpath(self._cache_path, file_name)
+
+        cached_data = None
+        with shelve.open(path_to_file.__str__()) as cache_file:
+            cached_data = cache_file[key]
+
+        return cached_data
+        
     def get_cache_names(self, key) -> List:
         """Returns cache names in a list"""
         pass
