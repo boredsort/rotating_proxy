@@ -29,7 +29,7 @@ class CacheManager:
         return True
 
 
-    def get_cache(self, cache_name, key: date|None) -> ProxyInfo:
+    def get_cache(self, cache_name, key: date|None=None) -> ProxyInfo:
         """Returns cache using a key"""
         if not key:
             key = format_date(date.today())
@@ -42,7 +42,7 @@ class CacheManager:
             cached_data = cache_file[key]
 
         return cached_data
-        
+
     def get_cache_names(self, key) -> List:
         """Returns cache names in a list"""
         pass

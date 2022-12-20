@@ -14,14 +14,6 @@ def test_write_cache():
     proxy_info = ProxyInfo()
     proxy_info.meta.source_url = 'www.freeproxylist.net'
     proxy_info.proxy_list = []
-    # data = json.loads(json.dumps({
-    #     'meta': {
-    #         'source_url': 'www.freeproxylist.net'
-    #     },
-    #     'data': 'sample'
-    # }),
-    # object_hook=ProxyInfo
-    # )
 
     success = cache_manager.write_cache(proxy_info)
 
@@ -38,4 +30,19 @@ def test_write_cache():
 
     assert cached_data.meta.source_url == proxy_info.meta.source_url
     assert success == True
+
+def test_get_cache():
+    cache_manager = CacheManager()
+    proxy_info = ProxyInfo()
+    proxy_info.meta.source_url = 'www.freeproxylist.net'
+    proxy_info.proxy_list = []
+
+    success = cache_manager.write_cache(proxy_info)
+    formatted_name = format.format_sitename(proxy_info.meta.source_url)
+    cached_data = cache_manager.get_cache(formatted_name)
+
+    assert cached_data.meta.source_url == proxy_info.meta.source_url
+    assert success == True
+
+
 
