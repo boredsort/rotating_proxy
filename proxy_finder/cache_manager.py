@@ -10,17 +10,17 @@ class CacheManager:
 
     def __init__(self) -> None:
         temp_path = Path('./proxy_finder/temp')
-        temp_path.mkdir(exist_ok=True)
         self._cache_path = Path.joinpath(Path.cwd(), temp_path)
+        self._cache_path.mkdir(exist_ok=True)
 
     def write_cache(self, data: ProxyInfo) -> bool:
         """Write the cache, returns true if successful"""
         # site = format_sitename(data.meta.source_url)
-        today = format_date(date().today())
+        today = format_date(date.today())
         file_name = format_sitename(data.meta.source_url)
         path_to_file = Path.joinpath(self._cache_path, file_name)
         try:
-            with shelve.open(path_to_file._str) as cache_file:
+            with shelve.open(path_to_file.__str__()) as cache_file:
                 cache_file[today] = data
         except:
             # logger here
