@@ -1,6 +1,6 @@
 import shelve
 from pathlib import Path
-from typing import List
+from typing import List, Optional
 from datetime import date
 
 from proxy_finder.abstract import ProxyInfo
@@ -29,7 +29,7 @@ class CacheManager:
         return True
 
 
-    def get_cache(self, cache_name, key: date|None=None) -> ProxyInfo:
+    def get_cache(self, cache_name, key: Optional(date)=None) -> ProxyInfo:
         """Returns cache using a key"""
         if not key:
             key = format_date(date.today())
@@ -43,9 +43,15 @@ class CacheManager:
 
         return cached_data
 
-    def get_cache_names(self, key) -> List:
+    def get_cache_names(self) -> List:
         """Returns cache names in a list"""
-        pass
+        names = []
+        paths = list(self._cache_path.iterdir())
+        for path in paths:
+            if path.is_file():
+                names.append(path.name)
+
+        return names
 
     def delete_cache(self, key: str) -> bool:
         """Deletes 1 cache item using a key"""
