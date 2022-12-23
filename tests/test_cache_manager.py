@@ -22,11 +22,11 @@ def test_write_cache():
     cache_path = Path.joinpath(Path.cwd(), temp_path)
     cache_path.mkdir(exist_ok=True)
 
-    file_name = format.format_sitename(proxy_info.meta.source_url)
-    path_to_file = Path.joinpath(cache_path, file_name)
+    key = format.format_sitename(proxy_info.meta.source_url)
+    path_to_file = Path.joinpath(cache_path, today)
     cached_data = None
     with shelve.open(path_to_file.__str__()) as cache_file:
-        cached_data = cache_file[today]
+        cached_data = cache_file[key]
 
     assert cached_data.meta.source_url == proxy_info.meta.source_url
     assert success == True
@@ -38,8 +38,9 @@ def test_get_cache():
     proxy_info.proxy_list = []
 
     success = cache_manager.write_cache(proxy_info)
-    formatted_name = format.format_sitename(proxy_info.meta.source_url)
-    cached_data = cache_manager.get_cache(formatted_name)
+    key = format.format_sitename(proxy_info.meta.source_url)
+    today = format.format_date(date.today())
+    cached_data = cache_manager.get_cache(today, key)
 
     assert cached_data.meta.source_url == proxy_info.meta.source_url
     assert success == True

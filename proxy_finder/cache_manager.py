@@ -16,12 +16,12 @@ class CacheManager:
     def write_cache(self, data: ProxyInfo) -> bool:
         """Write the cache, returns true if successful"""
         # site = format_sitename(data.meta.source_url)
-        today = format_date(date.today())
-        file_name = format_sitename(data.meta.source_url)
+        file_name = format_date(date.today())
+        key = format_sitename(data.meta.source_url)
         path_to_file = Path.joinpath(self._cache_path, file_name)
         try:
             with shelve.open(path_to_file.__str__()) as cache_file:
-                cache_file[today] = data
+                cache_file[key] = data
         except:
             # logger here
             return False
@@ -29,10 +29,12 @@ class CacheManager:
         return True
 
 
-    def get_cache(self, cache_name, key: Optional(date)=None) -> ProxyInfo:
+    def get_cache(self, cache_name, key: Optional[str]=None) -> ProxyInfo:
         """Returns cache using a key"""
         if not key:
-            key = format_date(date.today())
+            names = self.get_cache_names()
+            if names:
+                key = names[0]
 
         file_name = cache_name
         path_to_file = Path.joinpath(self._cache_path, file_name)
