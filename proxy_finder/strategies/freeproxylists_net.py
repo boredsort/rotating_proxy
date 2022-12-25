@@ -58,7 +58,6 @@ class FreeproxylistsNetStrategy(BaseStrategy):
     def parse(self, raw: str) -> ProxyInfo:
         soup = BeautifulSoup(raw, 'lxml')
 
-
         proxy_info = ProxyInfo()
         proxy_info.meta.source_url = self.URL
 
@@ -66,7 +65,9 @@ class FreeproxylistsNetStrategy(BaseStrategy):
 
         if not data_grid_tag:
             # should have an error logger here
+            # should raise error or add logger that says blocked by captcha
             # message should be blocked or not grid found
+            proxy_info.proxy_list = []
             return proxy_info
 
         proxy_list = []
@@ -91,10 +92,8 @@ class FreeproxylistsNetStrategy(BaseStrategy):
                     except:
                         # should have a logger here
                         continue
-
         
         proxy_info.proxy_list = proxy_list
-        
         
         return proxy_info
 
