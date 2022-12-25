@@ -1,31 +1,42 @@
+from datetime import date
 
 from typing import List
 
 from proxy_finder.abstract import ProxyInfo
-from proxy_finder.cache_manager import get_cache_names, get_cache, write_cache
+from proxy_finder.cache_manager import CacheManager
 from proxy_finder.proxy_finder import ProxyFinder
+import proxy_finder.utils.formatter as format
 
-def find_proxies(sites: str | List[str]) -> List[ProxyInfo | None]:
+def find_proxies(sites: str | List[str], force: bool = False) -> List[ProxyInfo | None]:
     """Returns a list of proxies from a site or cache"""
 
     # try refactoring this code later to be multithreaded for faster proxy finder extraction
 
-    proxies = []
-    # temporary, will be updated
-    date = '_2022_12_17'
-    for site in sites:
-        cached_list = get_cache_names()
+    if isinstance(sites, str):
+        tmp = sites
+        sites = []
+        sites.append(tmp)
         
-        site_key = site + date
-        if site_key in cached_list:
-            cached_proxy = get_cache(site_key)
-            proxies.append(cached_proxy)
+    proxies = []
+
+    today = date.today()
+    cache_name = format.format_date(today) 
+    for site in sites:
+        cache_manager = CacheManager()
+        # cached_list = cache_manager.get_cache_names()
+        site_key = format.format_sitename(site)
+        cached = None
+        if not force:
+            cached = cache_manager.get_cache(cache_name, site_key)
+
+        if cached:
+            proxies.append(cached)
         else:
             # extract proxy from site
             # write to cache
             proxy_finder = ProxyFinder()
             proxy_info = proxy_finder.extract(site)
-            success = write_cache(proxy_info)
+            success = cache_manager.write_cache(proxy_info)
             if success:
                 # log info success cache writing
                 pass

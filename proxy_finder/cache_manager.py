@@ -40,8 +40,12 @@ class CacheManager:
         path_to_file = Path.joinpath(self._cache_path, file_name)
 
         cached_data = None
-        with shelve.open(path_to_file.__str__()) as cache_file:
-            cached_data = cache_file[key]
+        try:
+            with shelve.open(path_to_file.__str__()) as cache_file:
+                cached_data = cache_file[key]
+        except KeyError as er:
+            # logger or something
+            pass
 
         return cached_data
 

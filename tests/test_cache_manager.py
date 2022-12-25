@@ -4,10 +4,10 @@ from pathlib import Path
 
 import shelve
 
-
 from proxy_finder.cache_manager import CacheManager
 from proxy_finder.abstract import ProxyInfo
 import proxy_finder.utils.formatter as format
+
 
 def test_write_cache():
     cache_manager = CacheManager()

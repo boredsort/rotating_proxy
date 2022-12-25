@@ -58,15 +58,18 @@ class FreeproxylistsNetStrategy(BaseStrategy):
     def parse(self, raw: str) -> ProxyInfo:
         soup = BeautifulSoup(raw, 'lxml')
 
-        proxy_list = []
+
+        proxy_info = ProxyInfo()
+        proxy_info.meta.source_url = self.URL
 
         data_grid_tag = soup.body.select_one('.DataGrid')
 
         if not data_grid_tag:
             # should have an error logger here
             # message should be blocked or not grid found
-            return proxy_list
+            return proxy_info
 
+        proxy_list = []
         row_tags = data_grid_tag.select('tr:not(.Caption)')
         if row_tags:
 
@@ -89,11 +92,11 @@ class FreeproxylistsNetStrategy(BaseStrategy):
                         # should have a logger here
                         continue
 
-        proxy_info = ProxyInfo()
-        proxy_info.proxy_list = proxy_list
-        proxy_info.meta.source_url = self.URL
         
-        return proxy_list
+        proxy_info.proxy_list = proxy_list
+        
+        
+        return proxy_info
 
     @attribute
     def get_ip_add(self, row_tag: Tag) -> str:
