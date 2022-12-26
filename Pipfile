@@ -12,6 +12,7 @@ cloudscraper = "*"
 bs4 = "*"
 lxml = "*"
 pytest = "*"
+pycountry = "*"
 
 [dev-packages]
 autopep8 = "*"
