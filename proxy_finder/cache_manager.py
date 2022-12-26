@@ -32,9 +32,9 @@ class CacheManager:
     def get_cache(self, cache_name, key: Optional[str]=None) -> ProxyInfo:
         """Returns cache using a key or the first item of the cached data"""
         if not key:
-            names = self.get_cache_names()
-            if names:
-                key = names[0]
+            keys = self.get_cache_keys(cache_name)
+            if keys:
+                key = keys[0]
 
         file_name = cache_name
         path_to_file = Path.joinpath(self._cache_path, file_name)
@@ -61,8 +61,17 @@ class CacheManager:
 
     def get_cache_keys(self, db_name) -> List:
         """Returns all the keys from a cache_name"""
-        with shelve.open():
+        file_name = db_name
+        path_to_file = Path.joinpath(self._cache_path, file_name)
+
+        keys = []
+        try:
+            with shelve.open(path_to_file.__str__()) as cache_file:
+                keys = list(cache_file.keys())
+        except:
             pass
+
+        return keys
 
     def delete_cache(self, key: str) -> bool:
         """Deletes 1 cache item using a key"""
