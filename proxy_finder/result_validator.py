@@ -24,7 +24,7 @@ proxy_data_schema = Schema({
     "ip": str,
     "port": int,
     "country": str,
-    "protocol": str,
+    "protocols": list,
     Optional("region"): str,
     Optional("city"): str,
     Optional("anonymity"): str,
