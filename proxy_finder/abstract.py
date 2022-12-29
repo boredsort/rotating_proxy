@@ -1,7 +1,7 @@
 from abc import ABCMeta, abstractmethod
 from datetime import datetime
 import json
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 from schema import Optional
 
@@ -23,7 +23,7 @@ class MetaData:
 
         self.extraction_date = datetime.now()
 
-@dataclass
+@dataclass(order=True)
 class ProxyData():
 
     ip: str
@@ -50,6 +50,6 @@ class ProxyInfo:
     def __init__(self):
 
         self.meta = MetaData()
-
+        self.proxy_list = field(default_factory=list)
 
 

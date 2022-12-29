@@ -1,11 +1,13 @@
+import random
 from datetime import date
 
 from typing import List
 
-from proxy_finder.abstract import ProxyInfo
+from proxy_finder.abstract import ProxyInfo, ProxyData
 from proxy_finder.cache_manager import CacheManager
 from proxy_finder.proxy_finder import ProxyFinder
 import proxy_finder.utils.formatter as format
+from pycountry import countries
 
 # def find_proxies(sites: str | List[str], force: bool = False) -> List[ProxyInfo | None]:
 #     """Returns a list of proxies from a site or cache"""
@@ -108,10 +110,46 @@ class ProxyManager:
         """
 
         # For future update, if there are no specific country, proxy finder should find proxies on other sites
+        country_code = params.get('country', None)
 
         cached = self._cache_manager.get_cache(self._cache_name)
+
         if cached:
-            proxies = cached.proxy_list
+            proxies = self._find_proxy_by_country(country_code, cached.proxy_list)
             if proxies:
-                for proxy in proxies:
-                    pass
+                return random.choice(proxies)
+            else:
+                # returns Just random country if nothing found
+                proxies = cached.proxy_list
+                return random.choice(proxies)
+
+        return None
+
+
+    def _find_proxy_by_country(self, country_code, proxy_list) -> list[ProxyData]:
+        
+        country = self._country_name(country_code)
+
+        found = []
+
+        if proxy_list:
+            found = filter(lambda cn: cn.country.lower() in country.name.lower(), proxy_list)
+        
+        return list(found)
+
+
+
+    @staticmethod
+    def _sort_proxies(proxies_list: List) -> List:
+
+        def get_country(element):
+            return element.country.lower()
+
+        proxies = sorted(proxies_list, key=get_country)
+
+        return proxies
+        
+    
+    @staticmethod
+    def _country_name(code: str) -> str:
+        return countries.get(alpha_2=code)
