@@ -52,17 +52,20 @@ class GeonodeComStrategy(BaseStrategy):
 
     def parse(self, raw: str) -> ProxyInfo:
 
+        proxy_info = ProxyInfo()
+        proxy_info.meta.source_url = self.URL
+        
         try:
             _json = json.loads(raw)
             if _json and 'data' in _json:
                 items = _json.get('data', None)
-
+                proxy_list = []
                 if items:
                     for item in items:
                         proxy = ProxyData()
                         proxy.ip = self.get_ip_add(item)
                         proxy.port = self.get_port_number(item)
-                        proxy.protocol = self.get_protocol(item)
+                        proxy.protocols = self.get_protocols(item)
                         proxy.anonymity = self.get_anonimity(item)
                         proxy.country = self.get_country(item)
                         proxy.region = self.get_region(item)
@@ -74,19 +77,41 @@ class GeonodeComStrategy(BaseStrategy):
                         except:
                             # should have a logger here
                             continue
+
+                        proxy_info.proxy_list = proxy_list
         except:
             pass
 
-        return None
+        return proxy_info
 
     @attribute
-    def get_ip_add(item):
+    def get_ip_add(self, item):
         return item.get('ip', None)
 
     @attribute
-    def get_port_number(item):
-        return item.get('port', None)
+    def get_port_number(self, item):
+        return int(item.get('port', None))
 
     @attribute
-    def get_protocol(item):
-        return item.get('port', None)
+    def get_protocols(self, item):
+        return item.get('protocols', [])
+
+    @attribute
+    def get_anonimity(self, item):
+        return item.get('anonymityLevel', None)
+    
+    @attribute
+    def get_country(self, item):
+        return item.get('country', None)
+    
+    @attribute
+    def get_city(self, item):
+        return item.get('city', None)
+
+    @attribute
+    def get_region(self, item):
+        return item.get('region', None)
+
+    @attribute
+    def get_uptime(self, item):
+        return item.get('upTime', None)
