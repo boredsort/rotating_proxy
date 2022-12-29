@@ -15,6 +15,9 @@ def attribute(func):
                 if 'port' in func_name:
                     return 0 
 
+                if 'protocol' in func_name:
+                    return [] 
+
             if 'port' in func_name:
                 return int(value)
 

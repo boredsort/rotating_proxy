@@ -29,7 +29,7 @@ class ProxyData():
     ip: str
     port: int
     country: str
-    protocol: str
+    protocols: list
     region: Optional(str)
     city: Optional(str)
     anonymity: Optional(str)

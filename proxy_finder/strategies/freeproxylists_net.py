@@ -80,7 +80,7 @@ class FreeproxylistsNetStrategy(BaseStrategy):
                     proxy = ProxyData()
                     proxy.ip = self.get_ip_add(row)
                     proxy.port = self.get_port_number(row)
-                    proxy.protocol = self.get_protocol(row)
+                    proxy.protocols = self.get_protocols(row)
                     proxy.anonymity = self.get_anonimity(row)
                     proxy.country = self.get_country(row)
                     proxy.region = self.get_region(row)
@@ -120,11 +120,11 @@ class FreeproxylistsNetStrategy(BaseStrategy):
         return value
 
     @attribute
-    def get_protocol(self, row_tag: Tag) -> str:
-        value = None
+    def get_protocols(self, row_tag: Tag) -> str:
+        value = []
         tag = row_tag.select_one('td:nth-child(3)')
         if tag:
-            value = tag.get_text().strip()
+            value.append(tag.get_text().strip())
 
         return value
 

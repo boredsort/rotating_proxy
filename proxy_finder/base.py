@@ -8,10 +8,12 @@ from proxy_finder.abstract import ProxyData, ProxyInfo
 
 class BaseStrategy(AbstractStrategy):
 
-    def execute(self, url:str)->ProxyInfo:
+    def execute(self)->ProxyInfo:
         
-        raw = self.download(url)
-        _json = self.parse(raw)
+        raw = self.download(self.URL)
+        proxy_info = self.parse(raw)
+
+        return proxy_info
 
     def download(self, url:str)->str:
 
