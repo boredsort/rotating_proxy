@@ -1,7 +1,7 @@
 import random
 from datetime import date
 
-from typing import List
+from typing import List, Dict
 
 from proxy_finder.abstract import ProxyInfo, ProxyData
 from proxy_finder.cache_manager import CacheManager
@@ -63,10 +63,11 @@ class ProxyManager:
 
         return proxies
 
-    def get_proxy(self, **params):
+    def get_proxy(self, **params) -> Dict:
         """Returns a proxy using a specific paramater i.e. country or protocol
            Default param is a random country
         """
+        # should return a dictionary of a http and https
 
         # For future update, if there are no specific country, proxy finder should find proxies on other sites
         country_code = params.get('country', None)
@@ -75,19 +76,61 @@ class ProxyManager:
 
         found_proxies = []
 
+        proxy = {}
+
         if cached:
 
             for item in cached:
                 found_proxies.extend(self._find_proxy_by_country(country_code, item.proxy_list))
 
             if found_proxies:
-                return random.choice(found_proxies)
+                found_proxy = random.choice(found_proxies)
+                protocols = found_proxy.protocols
+                for p in protocols:
+                    url = f'{p}://{found_proxy.ip}:{found_proxy.port}'
+                    if 'socks4' in p or 'socks5' in p:
+                        proxy.update({
+                            'http': url,
+                            'https': url,
+                        })
+                    else:
+                        proxy.update({
+                            p: url
+                        })
+
+                # what is missing, if http or https
+                missing = None
+                p_list = ['http', 'https']
+                for p in p_list:
+                    if p not in proxy:
+                        missing = p
+
+                # if there is missing, find a the missing    
+                if missing:
+                    found_missing = self._get_proxyby_protocol(missing, found_proxies)
+                    if found_missing:
+                        protocols = found_missing.protocols
+                        for p in protocols:
+                            url = f'{p}://{found_missing.ip}:{found_missing.port}'
+                            if missing == p.lower():
+                                proxy.update({p: url})
+
+                    else:
+                        # if cannot find use socks4 or socks5
+                        found_missing = self._get_proxyby_protocol('socks4', found_proxies)
+                        if found_missing:
+                            protocols = found_missing.protocols
+                            for p in protocols:
+                                url = f'{p}://{found_missing.ip}:{found_missing.port}'
+                                if missing == p.lower():
+                                    proxy.update({p: url})
+
             else:
                 # returns Just random country if nothing found
                 proxies = random.choice(cached)
                 return random.choice(proxies.proxy_list)
 
-        return None
+        return proxy
 
 
     def _find_proxy_by_country(self, country_code, proxy_list) -> list[ProxyData]:
@@ -115,7 +158,17 @@ class ProxyManager:
         
         return list(found)
 
+    def _get_proxyby_protocol(self, protocol, proxy_list):
 
+        found = None
+        for proxy in proxy_list:
+            protocols = proxy.protocols
+            for p in protocols:
+                if p.lower() == protocol.lower():
+                    found = proxy
+                    break
+
+        return found
 
     @staticmethod
     def _sort_proxies(proxies_list: List) -> List:
