@@ -87,7 +87,7 @@ class ProxyManager:
                 found_proxy = random.choice(found_proxies)
                 protocols = found_proxy.protocols
                 for p in protocols:
-                    url = f'{p}://{found_proxy.ip}:{found_proxy.port}'
+                    url = f'{p.lower()}://{found_proxy.ip}:{found_proxy.port}'
                     if 'socks4' in p or 'socks5' in p:
                         proxy.update({
                             'http': url,
@@ -95,7 +95,7 @@ class ProxyManager:
                         })
                     else:
                         proxy.update({
-                            p: url
+                            p.lower(): url
                         })
 
                 # what is missing, if http or https
@@ -111,9 +111,9 @@ class ProxyManager:
                     if found_missing:
                         protocols = found_missing.protocols
                         for p in protocols:
-                            url = f'{p}://{found_missing.ip}:{found_missing.port}'
+                            url = f'{p.lower()}://{found_missing.ip}:{found_missing.port}'
                             if missing == p.lower():
-                                proxy.update({p: url})
+                                proxy.update({p.lower(): url})
 
                     else:
                         # if cannot find use socks4 or socks5
@@ -121,9 +121,9 @@ class ProxyManager:
                         if found_missing:
                             protocols = found_missing.protocols
                             for p in protocols:
-                                url = f'{p}://{found_missing.ip}:{found_missing.port}'
+                                url = f'{p.lower()}://{found_missing.ip}:{found_missing.port}'
                                 if missing == p.lower():
-                                    proxy.update({p: url})
+                                    proxy.update({p.lower(): url})
 
             else:
                 # returns Just random country if nothing found
