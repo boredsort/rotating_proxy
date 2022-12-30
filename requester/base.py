@@ -4,7 +4,7 @@ import requests
 from requests.adapters import HTTPAdapter
 
 
-class ProxyRequest:
+class BaseProxyRequest:
 
     def __init__(self, retries=5, backoff_factor=5, status_forcelist=None, proxies=None):
 
