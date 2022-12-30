@@ -29,7 +29,7 @@ class CacheManager:
         return True
 
 
-    def get_cache(self, cache_name, key: Optional[str]=None) -> ProxyInfo:
+    def get_cache(self, cache_name, key: Optional[str]=None) -> ProxyInfo | None:
         """Returns cache using a key or the first item of the cached data"""
         if not key:
             keys = self.get_cache_keys(cache_name)
@@ -48,6 +48,30 @@ class CacheManager:
             pass
 
         return cached_data
+
+    def get_all_cache(self, cache_name: str) -> List[ProxyInfo]| None:
+
+        keys = self.get_cache_keys(cache_name)
+        if not keys:
+            return None
+
+        file_name = cache_name
+        path_to_file = Path.joinpath(self._cache_path, file_name)
+
+        cache = []
+        try:
+            with shelve.open(path_to_file.__str__()) as cache_file:
+                for key in keys:
+                    cache.append(cache_file[key])
+        except:
+            # logger or something
+            pass
+
+        return cache
+
+
+
+
 
     def get_cache_names(self) -> List:
         """Returns cache names in a list"""

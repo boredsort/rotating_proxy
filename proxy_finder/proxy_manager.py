@@ -9,47 +9,6 @@ from proxy_finder.proxy_finder import ProxyFinder
 import proxy_finder.utils.formatter as format
 from pycountry import countries
 
-# def find_proxies(sites: str | List[str], force: bool = False) -> List[ProxyInfo | None]:
-#     """Returns a list of proxies from a site or cache"""
-
-#     # try refactoring this code later to be multithreaded for faster proxy finder extraction
-
-#     if isinstance(sites, str):
-#         tmp = sites
-#         sites = []
-#         sites.append(tmp)
-        
-#     proxies = []
-
-#     today = date.today()
-#     cache_name = format.format_date(today) 
-#     for site in sites:
-#         cache_manager = CacheManager()
-#         # cached_list = cache_manager.get_cache_names()
-#         site_key = format.format_sitename(site)
-#         cached = None
-#         if not force:
-#             cached = cache_manager.get_cache(cache_name, site_key)
-
-#         if cached:
-#             proxies.append(cached)
-#         else:
-#             # extract proxy from site
-#             # write to cache
-#             proxy_finder = ProxyFinder()
-#             proxy_info = proxy_finder.extract(site)
-#             success = cache_manager.write_cache(proxy_info)
-#             if success:
-#                 # log info success cache writing
-#                 pass
-#             else:
-#                 pass
-#                 # logger info error writing to cache
-
-#             proxies.append(proxy_info)
-
-#     return proxies
-
 # this should contain proxy_manager class
     # should find proxy
     # should cache the proxy
@@ -112,16 +71,21 @@ class ProxyManager:
         # For future update, if there are no specific country, proxy finder should find proxies on other sites
         country_code = params.get('country', None)
 
-        cached = self._cache_manager.get_cache(self._cache_name)
+        cached = self._cache_manager.get_all_cache(self._cache_name)
+
+        found_proxies = []
 
         if cached:
-            proxies = self._find_proxy_by_country(country_code, cached.proxy_list)
-            if proxies:
-                return random.choice(proxies)
+
+            for item in cached:
+                found_proxies.extend(self._find_proxy_by_country(country_code, item.proxy_list))
+
+            if found_proxies:
+                return random.choice(found_proxies)
             else:
                 # returns Just random country if nothing found
-                proxies = cached.proxy_list
-                return random.choice(proxies)
+                proxies = random.choice(cached)
+                return random.choice(proxies.proxy_list)
 
         return None
 
@@ -132,8 +96,22 @@ class ProxyManager:
 
         found = []
 
-        if proxy_list:
-            found = filter(lambda cn: cn.country.lower() in country.name.lower(), proxy_list)
+        if country:
+            def get_country(element):
+
+                proxy_country = element.country.lower()
+                request_country = country.name.lower()
+                if len(proxy_country) == 2:
+                    request_country = country.alpha_2.lower()
+
+                if request_country in proxy_country:
+                    return True
+                else:
+                    return False
+
+
+            if proxy_list:
+                found = filter(get_country, proxy_list)
         
         return list(found)
 
