@@ -29,6 +29,7 @@ class ProxyManager:
         today = date.today()
         self._cache_name = format.format_date(today)
         self.queue = None
+        self.valid = None
 
     def find_proxies(self, sites: str | List[str], force: bool = False) -> List[ProxyInfo | None]:
         """Returns a list of proxies from a site or cache"""
@@ -142,7 +143,7 @@ class ProxyManager:
 
         return proxy
 
-    def _validate_proxy(self, proxy_queue: deque) -> None:
+    def _validate_proxies(self) -> None:
 
 
         def _requests(proxy):
@@ -152,27 +153,33 @@ class ProxyManager:
                         "Accept":"text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8"
             }
             proxies = {
-                'http': f'{proxy.protocol}://{proxy.ip}:{proxy.port}',
-                'https': f'{proxy.protocol}://{proxy.ip}:{proxy.port}'
+                'http': f'{proxy.protocols[0].lower()}://{proxy.ip}:{proxy.port}',
+                'https': f'{proxy.protocols[0].lower()}://{proxy.ip}:{proxy.port}'
             }
 
             try:
-                response = requests.get(random.choice(test_sites), heaeders=headers, proxies=proxies)
+                print(f'trying {proxies}')
+                response = requests.get(random.choice(test_sites), headers=headers, proxies=proxies)
                 if response.status_code in [200, 201]:
+                    print(f'found alive: {proxies}')
                     return {'alive': True, 'proxy': proxy }
 
-            except:
-                pass
+            except Exception as e:
+                print(f'error: {e}')
+                print(f'found error: {proxies}')
+            print(f'found dead: {proxies}')
             return {'alive': False, 'proxy': proxy }
 
-        pass
+        valid = []
+        if self.queue:
            
-        while self.queue:
-            proxy = self.queue.pop()
-            result = _requests(proxy)
+            while self.queue:
+                proxy = self.queue.pop()
+                result = _requests(proxy)
+                if result and result['alive']:
+                    valid.append(result)
 
-
-        pass
+        self.valid = valid
 
     def validate_proxies(self, cache_name):
         """Takes cached proxy and validates the found proxy if it is still valid.
@@ -185,11 +192,14 @@ class ProxyManager:
             cache_name = self._cache_name
 
         proxies_list = self._cache_manager.get_all_cache(cache_name)
+        
         if proxies_list:
-            deq = deque(proxies_list)
+            self.queue = deque()
+            for proxies in proxies_list:
+                self.queue.extend(proxies.proxy_list)
 
-            # for _ range(6):
-            #     threading.Thread(target=)
+            for _ in range(6):
+                threading.Thread(target=self._validate_proxies).start()
 
                 
 
