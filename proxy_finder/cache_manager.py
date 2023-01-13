@@ -4,7 +4,7 @@ from typing import List, Optional
 from datetime import date
 
 from proxy_finder.abstract import ProxyInfo
-from proxy_finder.utils.formatter import format_sitename, format_date
+from proxy_finder.utils.formatter import format_sitename, format_date, country_code
 
 class CacheManager:
 
@@ -13,10 +13,12 @@ class CacheManager:
         self._cache_path = Path.joinpath(Path.cwd(), temp_path)
         self._cache_path.mkdir(exist_ok=True)
 
-    def write_cache(self, data: ProxyInfo) -> bool:
+    def write_cache(self, data: ProxyInfo, name: str=None) -> bool:
         """Write the cache, returns true if successful"""
         # site = format_sitename(data.meta.source_url)
         file_name = format_date(date.today())
+        if name:
+            file_name = f'{name}_{file_name}' 
         key = format_sitename(data.meta.source_url)
         path_to_file = Path.joinpath(self._cache_path, file_name)
         try:
@@ -71,6 +73,26 @@ class CacheManager:
 
 
 
+    def write_valid_proxy(self, data):
+
+        today = format_date(date.today())
+        file_name = f'valid_{today}'
+        print(data)
+        key = data.country.upper()
+        if len(key) > 2:
+            key = country_code(key)
+            
+        path_to_file = Path.joinpath(self._cache_path, file_name)
+        try:
+            with shelve.open(path_to_file.__str__()) as cache_file:
+                key_items = cache_file.get(key, [])
+                key_items.append(data)
+                cache_file[key] = key_items
+        except:
+            # logger here
+            return False
+
+        return True
 
 
     def get_cache_names(self) -> List:
